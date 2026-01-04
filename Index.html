@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MHP Movies</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:#0e0e0e;color:#fff}
+
+/* HEADER */
+header{background:#111;padding:12px;text-align:center}
+header img{height:42px;cursor:pointer}
+
+/* NOTICE */
+.notice{
+  margin:14px;padding:14px;text-align:center;
+  border:2px solid transparent;
+  border-image:linear-gradient(45deg,red,cyan,lime,magenta,red) 1;
+  background:#111;
+}
+
+/* TOP BAR */
+.topbar{display:flex;gap:10px;padding:14px}
+.menu-btn,.hub-btn,.topbar input{
+  height:46px;display:flex;align-items:center;justify-content:center;
+  background:#fff;color:#000;
+  border:2px solid transparent;
+  border-image:linear-gradient(45deg,red,cyan,lime,magenta,red) 1;
+}
+.menu-btn{width:50px;cursor:pointer}
+.hub-btn{flex:1;font-weight:bold;text-decoration:none}
+.topbar input{flex:1;padding:0 12px}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;top:0;left:-260px;width:260px;height:100%;
+  background:#111;padding:20px;transition:.3s;z-index:9999
+}
+.sidebar.active{left:0}
+.sidebar .close{text-align:right;font-size:22px;cursor:pointer}
+.sidebar a{display:block;padding:14px;margin-top:10px;background:#000;color:#fff;text-decoration:none}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
+  gap:16px;padding:16px
+}
+.card{
+  background:#181818;cursor:pointer;
+  border:2px solid transparent;
+  border-image:linear-gradient(45deg,red,cyan,lime,magenta,red) 1
+}
+.card img{width:100%;height:260px;object-fit:cover}
+.card h3{padding:10px;font-size:14px;margin:0}
+
+/* SKELETON */
+.skel{background:#1c1c1c}
+.skel-img{
+  height:260px;
+  background:linear-gradient(90deg,#222,#333,#222);
+  animation:l 1.2s infinite
+}
+.skel-text{
+  height:16px;margin:10px;
+  background:linear-gradient(90deg,#222,#333,#222);
+  animation:l 1.2s infinite
+}
+@keyframes l{0%{background-position:-200px}100%{background-position:200px}}
+
+/* POST */
+.post{
+  max-width:720px;margin:20px auto;background:#111;
+  padding:18px;position:relative
+}
+.close-post{position:absolute;top:10px;right:10px;font-size:22px;cursor:pointer}
+
+/* SHARE */
+.share{display:flex;gap:10px;margin-bottom:12px}
+.share a{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.share svg{width:20px;height:20px;fill:#fff}
+
+/* POST BODY */
+.post img{width:220px;display:block;margin:10px auto}
+.post-title{text-align:center;font-size:18px}
+.post-desc{text-align:center;color:#ccc;margin-bottom:12px}
+
+/* TG + ALERT */
+.telegram{
+  display:block;text-align:center;background:#229ED9;
+  padding:12px;color:#fff;text-decoration:none;margin-bottom:8px
+}
+.telegram i{margin-right:6px}
+.alert{
+  background:#000;padding:12px;text-align:center;
+  font-size:13px;margin-bottom:14px
+}
+
+/* DOWNLOAD */
+.downloads{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:12px
+}
+.download-btn{
+  min-width:220px;padding:12px;color:#fff;text-decoration:none;
+  font-weight:bold;text-align:center;
+  background:linear-gradient(45deg,#ff004c,#ff8a00,#00ffd5)
+}
+.download-btn i{margin-right:6px}
+
+footer{background:#111;padding:14px;text-align:center;font-size:13px;color:#aaa}
+.share a{
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.share svg{
+  width:24px;
+  height:24px;
+}
+.exact-share{
+  gap:12px;
+}
+.exact-share .sh{
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.exact-share svg{
+  width:22px;
+  height:22px;
+  fill:#fff;
+}
+
+.sh-more{background:#777}
+.sh-whatsapp{background:#25D366}
+.sh-facebook{background:#1877f2}
+.sh-telegram{background:#229ED9}
+/* WRAPPER */
+.mini-actions{
+  padding:10px 0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+
+/* TOP ROW */
+.mini-row{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  width:100%;
+}
+
+/* BUTTON  */
+.mini-btn{
+  height:40px;                     
+  min-width:160px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+
+  padding:0 16px;
+  font-size:12px;
+  font-weight:600;
+
+  color:#fff !important;
+  text-decoration:none !important;
+
+  border-radius:2px;               
+  cursor:pointer;
+
+  box-shadow:
+    0 3px 0 rgba(0,0,0,.35),
+    0 6px 14px rgba(0,0,0,.30);
+
+  transition:all .15s ease;
+}
+
+.mini-btn:active{
+  transform:translateY(2px);
+  box-shadow:
+    0 1px 0 rgba(0,0,0,.35),
+    0 3px 8px rgba(0,0,0,.30);
+}
+
+.mini-btn i{
+  font-size:13px;
+  color:#fff;
+}
+
+.mini-btn.center{
+  min-width:200px;
+  margin:0 auto;
+}
+
+.mini-btn.pink{
+  background:linear-gradient(135deg,#ff9adf,#ffb6ea);
+}
+.mini-btn.blue{
+  background:linear-gradient(135deg,#4bb8ff,#7fdcff);
+}
+.mini-btn.green{
+  background:linear-gradient(135deg,#3fd3a2,#7becc8);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="https://i.ibb.co/svcVpWGp/1000085382-removebg-preview.png" onclick="goHome()">
+</header>
+<div class="mini-actions">
+
+  <div class="mini-row">
+    <a href="https://moviehubplay.fun" class="mini-btn pink" target="_blank">
+      <i class="fa fa-film"></i>
+      <span class="txt">MOVIEHUBPLAY</span>
+    </a>
+
+    <a href="https://t.me/moviehubplayrequest" class="mini-btn blue" target="_blank">
+      <i class="fa fa-telegram"></i>
+      <span class="txt">JOIN TELEGRAM</span>
+    </a>
+  </div>
+
+  <a href="https://t.me/moviehubplayrequest" class="mini-btn green center">
+    <i class="fa fa-download"></i>
+    <span class="txt">HOW TO DOWNLOAD</span>
+  </a>
+
+</div>
+<div class="notice">
+<b>IMPORTANT</b> – moviehubplay.fun is the only new official domain
+</div>
+
+<div class="topbar">
+  <div class="menu-btn" onclick="toggleSidebar()"><i class="fa fa-bars"></i></div>
+  <a href="https://tv-wine-alpha.vercel.app/" class="hub-btn" target="_blank">RangaTV</a>
+  <input id="search" placeholder="Search & press Enter">
+</div>
+
+<div class="sidebar" id="sidebar">
+  <div class="close" onclick="toggleSidebar()">✖</div>
+  <a href="/" onclick="goHome()">Home</a>
+  <a href="https://tv-wine-alpha.vercel.app/">Movies</a>
+  <a href="https://t.me/moviehubplayrequest" target="_blank">Telegram</a>
+</div>
+
+<div id="app"></div>
+
+<footer>© 2025 moviehubplay</footer>
+
+<script>
+const PROXY="https://api.allorigins.win/raw?url=";
+const API="https://madplay.site/api/filmyfly";
+const app=document.getElementById("app");
+
+let page=1,loading=false,query="",isPost=false;
+
+/* SLUG */
+function slugify(text){
+ return text.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+}
+
+/* SIDEBAR */
+function toggleSidebar(){
+ document.getElementById("sidebar").classList.toggle("active");
+}
+
+/* SEARCH */
+search.onkeydown=e=>{
+ if(e.key==="Enter"){
+  query=search.value.trim();
+  page=1;
+  app.innerHTML="";
+  loadHome();
+ }
+};
+
+/* SKELETON */
+function showSkeleton(){
+ const g=document.createElement("div");
+ g.className="grid";
+ for(let i=0;i<6;i++){
+  g.innerHTML+=`
+   <div class="skel">
+    <div class="skel-img"></div>
+    <div class="skel-text"></div>
+   </div>`;
+ }
+ app.appendChild(g);
+}
+
+/* HOME */
+function loadHome(){
+ if(loading) return;
+ loading=true;
+ isPost=false;
+ showSkeleton();
+
+ let url=`${API}?page=${page}`;
+ if(query) url+=`&search=${encodeURIComponent(query)}`;
+
+ fetch(PROXY+encodeURIComponent(url))
+ .then(r=>r.json())
+ .then(data=>{
+  document.querySelectorAll(".skel").forEach(e=>e.remove());
+  if(!data || data.length===0){loading=false;return;}
+
+  let grid=document.querySelector(".grid");
+  if(!grid){
+   grid=document.createElement("div");
+   grid.className="grid";
+   app.appendChild(grid);
+  }
+
+  data.forEach(m=>{
+   const d=document.createElement("div");
+   d.className="card";
+   d.innerHTML=`<img src="${m.logo}"><h3>${m.title}</h3>`;
+   d.onclick=()=>openPost(m);
+   grid.appendChild(d);
+
+   // 🔥 SLUG
+   if(location.hash.replace("#","") === slugify(m.title)){
+     openPost(m);
+   }
+  });
+
+  page++;loading=false;
+ });
+}
+
+/* POST */
+function openPost(m){
+ isPost=true;
+ const slug=slugify(m.title);
+ location.hash=slug;
+
+ app.innerHTML="<div class='post'>Loading…</div>";
+
+ fetch(PROXY+encodeURIComponent(m.url))
+ .then(r=>r.json())
+ .then(res=>{
+  const links=res.links||res;
+  const shareUrl=location.href;
+
+  app.innerHTML=`
+  <div class="post">
+   <div class="close-post" onclick="goHome()">✖</div>
+
+   <div class="share exact-share">
+
+  <!-- MORE SHARE -->
+  
+
+  
+  <!-- FACEBOOK -->
+  <a class="sh sh-facebook"
+     href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}"
+     target="_blank">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 2a10 10 0 0 0 0 20v-7H9v-3h3V9.5c0-3 1.8-4.5 4.4-4.5 1.3 0 2.6.2 2.6.2v2.9h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3h-2.9v7a10 10 0 0 0 0-20z"/>
+    </svg>
+  </a>
+
+  <!-- TELEGRAM -->
+  <a class="sh sh-telegram"
+     href="https://t.me/share/url?url=${encodeURIComponent(location.href)}"
+     target="_blank">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm4.9 6.9-1.6 7.6c-.1.5-.4.6-.8.4l-2.3-1.7-1.1 1c-.1.1-.2.2-.4.2l.2-2.4 4.4-4c.2-.2 0-.3-.3-.1l-5.4 3.4-2.3-.7c-.5-.2-.5-.5.1-.7l9.1-3.5c.4-.1.7.1.6.5z"/>
+    </svg>
+  </a>
+<a class="sh sh-more" onclick="moreShare('${m.title}')">
+    <svg viewBox="0 0 24 24">
+      <path d="M18 16a3 3 0 0 0-2.24 1.02L8.91 12.7a3 3 0 0 0 0-1.39l6.85-4.32A3 3 0 1 0 14 5l-6.85 4.32A3 3 0 1 0 7 14l6.85 4.32A3 3 0 1 0 18 16z"/>
+    </svg>
+  </a>
+</div>
+
+   <img src="${m.logo}">
+   <div class="post-title">${m.title}</div>
+   <div class="post-desc">${links[0]?.title||""}</div>
+
+   <a class="telegram" href="https://t.me/moviehubplayrequest" target="_blank">
+    <i class="fa fa-telegram"></i> Join Telegram
+   </a>
+   <div class="alert">DISCLAIMER:
+We do not host any files on our server. 
+All content and download links are provided by third-party sources. 
+We are not responsible for any external content.</div>
+
+   <div class="downloads">
+    ${links.map(d=>`
+     <a class="download-btn" href="${d.url||d.link}" target="_blank">
+      <i class="fa fa-download"></i>
+      ${d.title||d.name||"Download"} ${d.size?`[${d.size}]`:""}
+     </a>`).join("")}
+   </div>
+  </div>`;
+ });
+}
+function moreShare(title){
+  const url = location.href;
+
+  if(navigator.share){
+    navigator.share({
+      title: title,
+      url: url
+    });
+  }else{
+    navigator.clipboard.writeText(url);
+    alert("Link copied! Share manually.");
+  }
+}
+/* HOME */
+function goHome(){
+ location.hash="";
+ query="";
+ search.value="";
+ page=1;
+ app.innerHTML="";
+ loadHome();
+}
+
+/* INFINITE SCROLL */
+window.addEventListener("scroll",()=>{
+ if(isPost) return;
+ if(innerHeight + scrollY >= document.body.offsetHeight-200){
+  loadHome();
+ }
+});
+
+/* INIT */
+loadHome();
+</script>
+
+</body>
+</html>
